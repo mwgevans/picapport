@@ -1,10 +1,11 @@
 FROM alpine:latest AS build
-COPY build-dcraw.sh /usr/scripts/
-COPY add-buildpackages.sh /usr/scripts/
-COPY get-piccaport.sh /usr/scripts/
-RUN /usr/scripts/add-buildpackages.sh
-RUN /usr/scripts/build-dcraw.sh 
-RUN /usr/scripts/get-piccaport.sh
+COPY --chmod=0755 build-dcraw.sh /usr/scripts/
+COPY --chmod=0755 add-buildpackages.sh /usr/scripts/
+COPY --chmod=0755 get-piccaport.sh /usr/scripts/
+RUN  ls -la /usr/scripts
+RUN  /usr/scripts/add-buildpackages.sh
+RUN  /usr/scripts/build-dcraw.sh 
+RUN  /usr/scripts/get-piccaport.sh
 
 FROM alpine:latest
 RUN apk upgrade && \
@@ -37,3 +38,6 @@ WORKDIR /opt/picapport
 EXPOSE ${PICAPPORT_PORT}
 
 ENTRYPOINT tini -- java -Xms$XMS -Xmx$XMX -DTRACE=$DTRACE -Duser.home=/opt/picapport -jar picapport-headless.jar
+HEALTHCHECK  \
+  CMD wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
+#  --interval=5m --timeout=3s

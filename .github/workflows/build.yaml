@@ -10,6 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -19,12 +20,22 @@ jobs:
         with:
           # only amd64 so the image can be loaded
           platforms: linux/amd64
-          tags: drpsychick/githubtraffic:test
+          context: ./picapport
+          tags: mwgevans/picapport:test
           push: false
           load: true
-      - name: Test image
-        uses: addnab/docker-run-action@v3
+      - name: Start Container Test
+        run: docker run -d --rm --name testcontainer mwgevans/picapport:test
+      - name: Wait for container
+        uses: stringbean/docker-healthcheck-action@v1
         with:
-          image: drpsychick/githubtraffic:test
-          run: "/bin/sh /github-influx.sh"
-          options: "-e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}"
+          container: testcontainer
+          wait-time: 50
+          require-status: running
+          require-healthy: true
+#      - name: Test image
+#        uses: addnab/docker-run-action@v3
+#        with:
+#          image: mwgevans/picapport:test
+#          run: "/bin/sh /github-influx.sh"
+#          options: "-e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}"
