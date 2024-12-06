@@ -24,9 +24,15 @@ jobs:
           tags: mwgevans/picapport:test
           push: false
           load: true
-      - name: Test
-        run: |
-          docker run --rm mwgevans/picapport:test
+      - name: Start Container Test
+        run: docker run -d --rm --name testcontainer mwgevans/picapport:test
+      - name: Wait for container
+        uses: stringbean/docker-healthcheck-action@v1
+        with:
+          container: testcontainer
+          wait-time: 50
+          require-status: running
+          require-healthy: true
 #      - name: Test image
 #        uses: addnab/docker-run-action@v3
 #        with:
