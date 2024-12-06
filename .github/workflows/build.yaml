@@ -24,9 +24,12 @@ jobs:
           tags: mwgevans/picapport:test
           push: false
           load: true
-      - name: Test image
-        uses: addnab/docker-run-action@v3
-        with:
-          image: drpsychick/githubtraffic:test
-          run: "/bin/sh /github-influx.sh"
-          options: "-e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}"
+      - name: Test
+        run: |
+          docker run --rm mwgevans/picapport:test
+#      - name: Test image
+#        uses: addnab/docker-run-action@v3
+#        with:
+#          image: mwgevans/picapport:test
+#          run: "/bin/sh /github-influx.sh"
+#          options: "-e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}"
