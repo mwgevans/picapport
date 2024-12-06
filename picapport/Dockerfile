@@ -37,3 +37,5 @@ WORKDIR /opt/picapport
 EXPOSE ${PICAPPORT_PORT}
 
 ENTRYPOINT tini -- java -Xms$XMS -Xmx$XMX -DTRACE=$DTRACE -Duser.home=/opt/picapport -jar picapport-headless.jar
+HEALTHCHECK  --interval=5m --timeout=3s \
+  CMD wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
