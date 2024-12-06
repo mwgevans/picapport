@@ -3,8 +3,8 @@ COPY build-dcraw.sh /usr/scripts/
 COPY add-buildpackages.sh /usr/scripts/
 COPY get-piccaport.sh /usr/scripts/
 RUN chmod +x /usr/scripts/add-buildpackages.sh && /usr/scripts/add-buildpackages.sh
-RUN /usr/scripts/build-dcraw.sh 
-RUN /usr/scripts/get-piccaport.sh
+RUN chmod +x /usr/scripts/build-dcraw.sh && /usr/scripts/build-dcraw.sh 
+RUN chmod +x /usr/scripts/get-piccaport.sh && /usr/scripts/get-piccaport.sh
 
 FROM alpine:latest
 RUN apk upgrade && \
