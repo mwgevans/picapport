@@ -2,7 +2,7 @@ FROM alpine:latest AS build
 COPY build-dcraw.sh /usr/scripts/
 COPY add-buildpackages.sh /usr/scripts/
 COPY get-piccaport.sh /usr/scripts/
-RUN /usr/scripts/add-buildpackages.sh
+RUN chmod +x /usr/scripts/add-buildpackages.sh && /usr/scripts/add-buildpackages.sh
 RUN /usr/scripts/build-dcraw.sh 
 RUN /usr/scripts/get-piccaport.sh
 
