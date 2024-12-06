@@ -19,7 +19,8 @@ jobs:
         with:
           # only amd64 so the image can be loaded
           platforms: linux/amd64
-          tags: drpsychick/githubtraffic:test
+          context: ./picapport
+          tags: mwgevans/picapport:test
           push: false
           load: true
       - name: Test image
