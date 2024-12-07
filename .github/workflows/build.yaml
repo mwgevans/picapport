@@ -22,6 +22,8 @@ jobs:
           platforms: linux/amd64
           context: ./picapport
           tags: mwgevans/picapport:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           push: false
           load: true
       - name: Start Container Test
