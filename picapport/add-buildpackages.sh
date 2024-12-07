@@ -1,3 +1,4 @@
+#!/bin/sh
 apk upgrade && \
 apk update && \
 apk add --no-cache musl-dev \
@@ -5,4 +6,5 @@ apk add --no-cache musl-dev \
         libjpeg-turbo-dev \
         lcms2-dev \
         jasper-dev \
-        curl;
+        curl \
+        wget;
