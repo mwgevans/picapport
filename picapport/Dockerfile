@@ -14,6 +14,7 @@ RUN apk upgrade && \
         libjpeg-turbo \
         libjpeg-turbo-utils \
         lcms2 \
+        exiftool \
         jasper;
 COPY --from=build /opt/dcraw/bin/* /bin/
 
@@ -22,7 +23,7 @@ ARG VCS_REF
 ARG VCS_URL
 ARG VERSION
 
-ENV PICAPPORT_PORT=80
+ENV PICAPPORT_PORT=8080
 ENV DTRACE=WARNING
 ENV XMS=256m
 ENV XMX=1024m
