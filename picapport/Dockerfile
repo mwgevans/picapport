@@ -19,7 +19,7 @@ RUN apk upgrade && \
         tini \
         openjdk8-jre;
 COPY --from=build /opt/dcraw/bin/* /bin/
-
+COPY --chmod=0755 start-picapport.sh /usr/scripts/
 ARG BUILD_DATE
 ARG VCS_REF
 ARG VCS_URL
@@ -31,12 +31,11 @@ ENV DTRACE=WARNING
 ENV XMS=256m
 ENV XMX=1024m
 
-RUN mkdir -p /opt/picapport/.picapport/plugins && \
-    printf "%s\n%s\n%s\n%s\n%s\n%s\n" "server.port=$PICAPPORT_PORT" "robot.root.0.path=/srv/photos" "client.theme.darktheme=true" "client.theme.color=#34568B" "foto.jpg.usecache=2" "plugin.shadow.path=/srv/picapportshadowfiles"> /opt/picapport/.picapport/picapport.properties
+RUN mkdir -p /opt/picapport/.picapport/plugins 
 COPY --from=build /opt/picapport/picapport-headless.jar /opt/picapport/picapport-headless.jar
-COPY --from=build /opt/picapport/plugins/* /opt/picapport/.picapport/plugins/
-COPY --from=build /opt/picapport/add-ons/* /opt/picapport/.picapport/groovy/
-COPY apache-groovy-binary-*.zip /opt/picapport/.picapport/groovy/
+COPY --from=build /opt/picapport/plugins/* /opt/picapportplugins/
+COPY --from=build /opt/picapport/add-ons/* /opt/picapportgroovy/
+COPY apache-groovy-binary-*.zip /opt/picapportgroovy/
 WORKDIR /opt/picapport
 EXPOSE ${PICAPPORT_PORT}
 # client.theme.color=#34568B
@@ -57,7 +56,8 @@ RUN chown -hR picapport /opt/picapport/.picapport
 RUN chown -hR picapport /srv
 USER ${APP}
 
-ENTRYPOINT ["tini", "--", "java", "-Xms256m", "-Xmx1024m", "-DTRACE=DEBUG", "-Duser.home=/opt/picapport", "-jar", "picapport-headless.jar"]
+ENTRYPOINT ["tini", "--" ]
+CMD ["/usr/scripts/start-picapport.sh"]
 HEALTHCHECK  \
   CMD wget --no-verbose --tries=1 --spider http://localhost:${PICAPPORT_PORT}/ || exit 1
 #  --interval=5m --timeout=3s
