@@ -1,6 +1,6 @@
 # Project Title
 
-Simple overview of use/purpose.
+Picapport Private Photo Server
 
 ## Description
 
