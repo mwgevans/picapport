@@ -31,13 +31,6 @@ ENV DTRACE=WARNING
 ENV XMS=256m
 ENV XMX=1024m
 
-RUN mkdir -p /opt/picapport/.picapport/plugins 
-COPY --from=build /opt/picapport/picapport-headless.jar /opt/picapport/picapport-headless.jar
-COPY --from=build /opt/picapport/plugins/* /opt/picapportplugins/
-COPY --from=build /opt/picapport/add-ons/* /opt/picapportgroovy/
-COPY apache-groovy-binary-*.zip /opt/picapportgroovy/
-WORKDIR /opt/picapport
-EXPOSE ${PICAPPORT_PORT}
 # client.theme.color=#34568B
 # client.theme.darktheme=true
 # Create a non-privileged user that the app will run under.
@@ -52,10 +45,21 @@ RUN adduser \
     --no-create-home \
     --uid "${UID}" \
     ${APP}
+
+RUN install -d -m 0755 -o ${APP} -g ${APP} /opt/picapport/.picapport/plugins
+RUN install -d -m 0755 -o ${APP} -g ${APP} /srv/photos
+RUN install -d -m 0755 -o ${APP} -g ${APP} /srv/cache
+RUN install -d -m 0755 -o ${APP} -g ${APP} /srv/picapportshadowfiles
+
+COPY --from=build /opt/picapport/picapport-headless.jar /opt/picapport/picapport-headless.jar
+COPY --from=build /opt/picapport/plugins/* /opt/picapportplugins/
+COPY --from=build /opt/picapport/add-ons/* /opt/picapportgroovy/
+COPY apache-groovy-binary-*.zip /opt/picapportgroovy/
 RUN chown -hR picapport /opt/picapport/.picapport
 RUN chown -hR picapport /srv
 USER ${APP}
-
+WORKDIR /opt/picapport
+EXPOSE ${PICAPPORT_PORT}
 ENTRYPOINT ["tini", "--" ]
 CMD ["/usr/scripts/start-picapport.sh"]
 HEALTHCHECK  \
